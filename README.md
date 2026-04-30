@@ -1,231 +1,291 @@
-# 📘 MedX-PneuNet
+# 📘 MedX-PneuNet: Explainable Deep Learning for Pneumonia Detection using Chest X-ray Images
 
-## 🫁 Explainable Deep Learning for Pneumonia Detection from Chest X-ray Images Using Lightweight CNNs and Grad-CAM
-
----
-
-## 📌 Overview
-
-**MedX-PneuNet** is a deep learning-based medical image classification system designed to detect **Pneumonia from Chest X-ray images** using lightweight CNN architectures. The project focuses not only on accuracy but also on **model interpretability** using **Grad-CAM explainability techniques**.
-
-It compares multiple models and evaluates their performance under different dataset conditions to analyze real-world applicability in low-resource environments.
+![Python](https://img.shields.io/badge/Python-3.9%2B-blue)
+![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Status](https://img.shields.io/badge/Status-Research%20Project-red)
 
 ---
 
-## 🎯 Objectives
+## 📌 Abstract
 
-* Detect Pneumonia from chest X-ray images
-* Compare lightweight and deep CNN architectures
-* Evaluate performance on full vs reduced datasets
-* Provide explainable AI visualizations using Grad-CAM
-* Improve clinical interpretability of deep learning models
+Pneumonia remains one of the leading causes of mortality worldwide, particularly in low-resource healthcare settings. Early and accurate diagnosis using chest X-ray imaging is critical for timely treatment. In this project, we propose **MedX-PneuNet**, an explainable deep learning framework for automated pneumonia detection using chest X-ray images.
 
----
+The system leverages **transfer learning-based convolutional neural networks (CNNs)**, specifically **MobileNetV2 (baseline)** and **ResNet50 (comparative model)**, to perform binary classification between *Normal* and *Pneumonia* cases. To enhance clinical interpretability, we integrate **Gradient-weighted Class Activation Mapping (Grad-CAM)** for visual explainability.
 
-## 🧠 Models Used
-
-* **MobileNetV2** (Lightweight baseline model)
-* **ResNet50** (Deeper architecture for comparison)
-
-Both models are fine-tuned for binary classification:
-
-* Normal
-* Pneumonia
+Additionally, we conduct a **dataset efficiency study** and **model benchmarking analysis** to evaluate performance under full and reduced dataset conditions, simulating real-world low-resource scenarios.
 
 ---
 
-## 📊 Dataset
+## 🎯 Key Contributions
 
-We use the publicly available dataset:
+This work extends existing literature with the following contributions:
 
-Chest X-Ray Images (Pneumonia)
-
-### Dataset Split:
-
-* Training set: 5216 images
-* Validation set: 16 images
-* Test set: 624 images
-
-### Classes:
-
-* NORMAL
-* PNEUMONIA
+- ✔ Reproduction and validation of MobileNetV2-based pneumonia classification
+- ✔ Comparative evaluation with ResNet50 architecture
+- ✔ Dataset efficiency analysis (full vs reduced dataset)
+- ✔ Comprehensive evaluation using Accuracy, Precision, Recall, F1-score, and ROC-AUC
+- ✔ Explainable AI integration using Grad-CAM for clinical interpretability
+- ✔ Detailed error analysis of false positive and false negative predictions
+- ✔ Lightweight and reproducible training pipeline suitable for GPU environments
 
 ---
 
-## ⚙️ Project Pipeline
+## 🧠 Methodology Overview
 
-1. Data Loading & Preprocessing
-2. Model Training (MobileNetV2 & ResNet50)
-3. Performance Evaluation
-4. Dataset Efficiency Experiment (Full vs Reduced)
-5. Explainability using Grad-CAM
-6. Error Analysis (False Positives / False Negatives)
+The proposed pipeline consists of the following stages:
+
+```
+
+Chest X-ray Images
+↓
+Data Cleaning & Preprocessing
+↓
+Dataset Splitting (Train / Validation / Test)
+↓
+Data Augmentation
+↓
+Transfer Learning Models (MobileNetV2 / ResNet50)
+↓
+Fine-tuning (Optional)
+↓
+Model Training (GPU-based)
+↓
+Evaluation Metrics
+↓
+Grad-CAM Explainability
+↓
+Error Analysis
+↓
+Performance Comparison
+
+````
+
+---
+
+## 🏗️ Model Architectures
+
+### 🔹 MobileNetV2 (Baseline)
+- Lightweight CNN architecture
+- Optimized for mobile and low-computation environments
+- Used as primary baseline model
+
+### 🔹 ResNet50 (Comparative Model)
+- Deep residual learning architecture
+- Improved feature extraction capability
+- Used for performance benchmarking
+
+---
+
+## 📊 Dataset Description
+
+- **Source**: Kaggle Chest X-ray Pneumonia Dataset
+- **Classes**:
+  - Normal
+  - Pneumonia
+
+### Dataset Variants:
+- Full dataset (original distribution)
+- Reduced dataset (~1500–2000 images) for efficiency analysis
+
+---
+
+## 🔬 Experimental Setup
+
+All experiments are conducted under controlled conditions:
+
+| Parameter | Value |
+|----------|------|
+| Input Size | 224 × 224 |
+| Batch Size | 16 |
+| Optimizer | Adam |
+| Loss Function | Binary Cross-Entropy |
+| Epochs | 5–10 |
+| Framework | TensorFlow / Keras |
+| Hardware | Google Colab GPU |
 
 ---
 
 ## 📈 Evaluation Metrics
 
-The models are evaluated using:
+The model performance is evaluated using:
 
-* Accuracy
-* Precision
-* Recall
-* F1-score
-* Confusion Matrix
-* ROC-AUC (optional)
-
----
-
-## 🔍 Explainability (Grad-CAM)
-
-Grad-CAM is used to visualize model attention on chest X-ray images.
-
-### Key Insights:
-
-* Highlights lung regions influencing predictions
-* Detects whether model focuses on irrelevant areas
-* Compares attention maps between MobileNetV2 and ResNet50
-* Helps interpret false predictions
+- Accuracy
+- Precision
+- Recall (Sensitivity)
+- F1-score
+- Confusion Matrix
+- ROC-AUC Curve
 
 ---
 
-## 🧪 Experimental Analysis
+## 🔥 Explainability: Grad-CAM
 
-### 1. Model Comparison
+To ensure clinical interpretability, **Grad-CAM (Gradient-weighted Class Activation Mapping)** is used to visualize model attention.
 
-* MobileNetV2 vs ResNet50 performance comparison
+### Grad-CAM Analysis Includes:
+- Correct predictions (true positives)
+- Misclassified cases (false positives / false negatives)
+- Heatmap overlays on chest X-ray images
 
-### 2. Dataset Efficiency
-
-* Full dataset training
-* Reduced dataset (~1500–2000 images)
-* Analysis of performance drop
-
-### 3. Error Analysis
-
-* False Positives: Normal classified as Pneumonia
-* False Negatives: Missed Pneumonia cases
-* Causes: noise, low contrast, feature limitations
+### Objective:
+To verify whether the model focuses on **lung regions** or irrelevant anatomical structures.
 
 ---
 
-## 🧰 Tech Stack
+## 📉 Error Analysis
 
-* Python
-* TensorFlow / Keras
-* NumPy / Pandas
-* Matplotlib / Seaborn
-* OpenCV
-* Scikit-learn
+We perform qualitative and quantitative error analysis:
+
+### False Positives:
+- Normal images incorrectly classified as Pneumonia
+- Often caused by:
+  - Image artifacts
+  - Rib shadows
+  - Low contrast regions
+
+### False Negatives:
+- Pneumonia cases misclassified as Normal
+- Often caused by:
+  - Mild infections
+  - Poor image quality
+  - Subtle radiographic patterns
 
 ---
 
-## 🚀 How to Run
+## ⚖️ Dataset Efficiency Study
 
-### 1. Clone Repository
+To evaluate real-world applicability, we compare:
+
+- Full dataset performance
+- Reduced dataset performance
+
+### Objective:
+Assess model robustness under limited data conditions.
+
+---
+
+## 📦 Installation
 
 ```bash
-git clone https://github.com/your-username/medx-pneunet.git
-cd medx-pneunet
-```
+git clone https://github.com/your-username/MedX-PneuNet.git
+cd MedX-PneuNet
 
----
-
-### 2. Install Dependencies
-
-```bash
 pip install -r requirements.txt
-```
+````
 
 ---
 
-### 3. Run Training Notebook
+## 🚀 Training the Model
 
-Open:
-
-```
-notebooks/02_mobilenetv2_training.ipynb
-```
-
-or
-
-```
-notebooks/03_resnet50_training.ipynb
-```
-
----
-
-### 4. Run Evaluation
+### MobileNetV2
 
 ```bash
-python src/evaluate.py
+python experiments/exp_mobilenet_full.py
 ```
 
----
-
-### 5. Run Grad-CAM
+### ResNet50
 
 ```bash
-python src/gradcam.py
+python experiments/exp_resnet_full.py
 ```
 
 ---
 
-## 📊 Results (Example Format)
+## 📊 Results Summary (Example Format)
 
-| Model       | Accuracy | Precision | Recall | F1-score |
-| ----------- | -------- | --------- | ------ | -------- |
-| MobileNetV2 | XX%      | XX%       | XX%    | XX%      |
-| ResNet50    | XX%      | XX%       | XX%    | XX%      |
-
----
-
-## 🔬 Key Contributions
-
-* Lightweight CNN comparison for medical imaging
-* Dataset efficiency study for low-resource settings
-* Explainable AI integration using Grad-CAM
-* Error analysis for clinical interpretability
-* CPU-friendly training pipeline
+| Model       | Dataset | Accuracy | F1-score | ROC-AUC |
+| ----------- | ------- | -------- | -------- | ------- |
+| MobileNetV2 | Full    | XX%      | XX%      | XX%     |
+| MobileNetV2 | Reduced | XX%      | XX%      | XX%     |
+| ResNet50    | Full    | XX%      | XX%      | XX%     |
+| ResNet50    | Reduced | XX%      | XX%      | XX%     |
 
 ---
 
-## 🖼️ Grad-CAM Visualization
+## 🧪 Grad-CAM Visualization
 
-(Insert sample images here)
+Grad-CAM outputs highlight discriminative regions in chest X-ray images, enabling interpretability of model predictions.
 
-* Correct prediction heatmaps
-* Incorrect prediction analysis
-* Model attention comparison
+Example outputs include:
+
+* Pneumonia region localization
+* Lung abnormality detection
+* Misclassification reasoning
 
 ---
 
-## 📌 Future Work
+## 🌐 Streamlit Deployment (Optional)
 
-* Improve dataset balancing
-* Integrate transformer-based models
-* Deploy as a web application (Streamlit)
-* Add multi-disease classification (COVID-19, TB, etc.)
+Run the web application:
+
+```bash
+streamlit run streamlit_app/app.py
+```
+
+Features:
+
+* Upload chest X-ray image
+* Predict Pneumonia / Normal
+* Display confidence score
+* Visualize Grad-CAM heatmap
+
+---
+
+## 📚 Project Structure
+
+```
+MedX-PneuNet/
+│
+├── src/                  # Core implementation
+├── experiments/         # Model training scripts
+├── evaluation/          # Metrics & analysis
+├── explainability/      # Grad-CAM implementation
+├── streamlit_app/       # Web deployment
+├── results/             # Outputs & visualizations
+├── data/                # Dataset (local use only)
+├── notebooks/           # Exploratory analysis
+└── README.md
+```
+
+---
+
+## 🔮 Future Work
+
+* Integration of Vision Transformers (ViTs)
+* Multi-class lung disease classification
+* Clinical validation with real hospital data
+* Lightweight mobile deployment (Android/iOS)
+* Uncertainty quantification for predictions
+
+---
+
+## 📖 Citation
+
+If you use this repository in your research, please cite:
+
+```
+MedX-PneuNet: Explainable Deep Learning for Pneumonia Detection using Chest X-ray Images
+Author: [Your Name]
+Year: 2026
+```
 
 ---
 
 ## 📜 License
 
-This project is licensed under the **MIT License**.
+This project is licensed under the MIT License.
 
 ---
 
-## 👨‍💻 Author
+## 🤝 Acknowledgements
 
-**MedX-PneuNet Project**
-Final Year Academic Research Project
-Focus: Deep Learning + Medical Imaging + Explainable AI
+* Kaggle Chest X-ray dataset contributors
+* Original research paper authors
+* TensorFlow and Keras communities
 
 ---
 
-## ⭐ Acknowledgements
+## ⭐ Final Note
 
-* Kaggle dataset contributors
-* TensorFlow/Keras community
-* Research in explainable AI (Grad-CAM)
+This project is developed for **academic research and educational purposes**, focusing on **explainable AI in medical imaging**.
