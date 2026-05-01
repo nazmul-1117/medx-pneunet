@@ -1,7 +1,7 @@
 import streamlit as st
-from src.inference import load_models, predict
-from src.utils import preprocess_image
-from src.gradcam import generate_gradcam, overlay_gradcam, get_last_conv_layer
+from inference import load_models, predict
+from utils import preprocess_image
+from gradcam import generate_gradcam, overlay_gradcam, get_last_conv_layer
 
 # -------------------------------------------------
 # PAGE CONFIG
