@@ -1,17 +1,15 @@
 import tensorflow as tf
 import numpy as np
-import cv2
 
 
 # -------------------------------------------------
-# 1. CORE GRAD-CAM FUNCTION (FIXED & STABLE)
+# 1. GRAD-CAM CORE (FIXED)
 # -------------------------------------------------
 def get_gradcam(model, img_array, last_conv_layer_name):
     """
-    Computes Grad-CAM heatmap for a single image.
+    Compute Grad-CAM heatmap (Streamlit-safe version)
     """
 
-    # Build model that maps input -> (conv layer, prediction)
     grad_model = tf.keras.models.Model(
         inputs=model.inputs,
         outputs=[
@@ -22,37 +20,24 @@ def get_gradcam(model, img_array, last_conv_layer_name):
 
     with tf.GradientTape() as tape:
         conv_outputs, predictions = grad_model(img_array)
-
-        # Ensure tensor (fixes your crash)
         predictions = tf.convert_to_tensor(predictions)
 
-        # Handle binary classification safely
-        if len(predictions.shape) == 2:
-            loss = predictions[:, 0]
-        else:
-            loss = predictions
+        loss = predictions[:, 0] if len(predictions.shape) == 2 else predictions
 
-    # Compute gradients
     grads = tape.gradient(loss, conv_outputs)
 
     if grads is None:
-        raise ValueError("Gradients returned None. Check model architecture.")
+        raise ValueError("Gradients are None. Check model/layer name.")
 
-    # Global average pooling
     pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
-
-    # Weight feature maps
     conv_outputs = conv_outputs[0]
 
     heatmap = conv_outputs @ pooled_grads[..., tf.newaxis]
     heatmap = tf.squeeze(heatmap)
 
-    # ReLU (keep positive influence only)
     heatmap = tf.maximum(heatmap, 0)
 
-    # Avoid divide-by-zero
     max_val = tf.reduce_max(heatmap)
-
     if max_val == 0:
         return np.zeros((7, 7), dtype=np.float32)
 
@@ -62,62 +47,59 @@ def get_gradcam(model, img_array, last_conv_layer_name):
 
 
 # -------------------------------------------------
-# 2. WRAPPER FUNCTION
+# 2. WRAPPER
 # -------------------------------------------------
 def generate_gradcam(model, img_array, layer_name):
-    """
-    Wrapper for Grad-CAM generation.
-    """
     return get_gradcam(model, img_array, layer_name)
 
 
 # -------------------------------------------------
-# 3. HEATMAP OVERLAY FUNCTION (STREAMLIT SAFE)
+# 3. SAFE OVERLAY (NO CV2)
 # -------------------------------------------------
+from PIL import Image
+
 def overlay_gradcam(original_img, heatmap, alpha=0.4):
     """
-    Overlay Grad-CAM heatmap on original image.
+    Overlay Grad-CAM WITHOUT OpenCV (Streamlit-safe)
     """
 
-    # Resize heatmap to image size
-    heatmap = cv2.resize(
-        heatmap,
-        (original_img.shape[1], original_img.shape[0])
-    )
+    # Ensure numpy
+    original_img = np.array(original_img)
 
+    # Resize heatmap manually (no cv2)
+    heatmap = tf.image.resize(
+        heatmap[..., np.newaxis],
+        (original_img.shape[0], original_img.shape[1])
+    ).numpy().squeeze()
+
+    # Normalize heatmap
     vmin, vmax = np.percentile(heatmap, (2, 98))
     heatmap = np.clip(heatmap, vmin, vmax)
     heatmap = (heatmap - vmin) / (vmax - vmin + 1e-8)
-    heatmap = np.uint8(255 * heatmap)
+    heatmap = (heatmap * 255).astype(np.uint8)
 
-    # Normalize to 0–255
-    # heatmap = np.uint8(255 * heatmap)
+    # Convert to RGB heatmap using matplotlib colormap
+    import matplotlib.cm as cm
 
-    # Apply color map
-    heatmap_color = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
+    colormap = cm.get_cmap("jet")
+    heatmap_color = colormap(heatmap / 255.0)[..., :3]
+    heatmap_color = (heatmap_color * 255).astype(np.uint8)
 
-    # Ensure image format is uint8
+    # Ensure RGB image
     if original_img.max() <= 1:
         original_img = (original_img * 255).astype(np.uint8)
 
-    # Convert grayscale to RGB if needed
-    if len(original_img.shape) == 2:
-        original_img = cv2.cvtColor(original_img, cv2.COLOR_GRAY2RGB)
-
-    # Overlay
-    overlay = cv2.addWeighted(original_img, 1 - alpha, heatmap_color, alpha, 0)
+    # Blend images
+    overlay = (1 - alpha) * original_img + alpha * heatmap_color
+    overlay = overlay.astype(np.uint8)
 
     return overlay
 
 
 # -------------------------------------------------
-# 4. MODEL-SPECIFIC LAYER SELECTOR (RESEARCH SAFE)
+# 4. LAYER SELECTOR
 # -------------------------------------------------
 def get_last_conv_layer(model_name):
-    """
-    Returns last convolutional layer for Grad-CAM.
-    """
-
     model_name = model_name.lower()
 
     if model_name == "mobilenet":
@@ -127,6 +109,4 @@ def get_last_conv_layer(model_name):
         return "conv5_block3_out"
 
     else:
-        raise ValueError(
-            "Unknown model. Use 'mobilenet' or 'resnet'"
-        )
+        raise ValueError("Use 'mobilenet' or 'resnet'")

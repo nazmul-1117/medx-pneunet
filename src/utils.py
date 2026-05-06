@@ -1,15 +1,16 @@
-
-import cv2
+from PIL import Image
 import numpy as np
 
-def preprocess_image(uploaded_file):
-    file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
-    img = cv2.imdecode(file_bytes, 1)
-    
-    img = cv2.resize(img, (224, 224))
-    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    
-    img_array = img_rgb / 255.0
-    img_array = np.expand_dims(img_array, axis=0)
-    
-    return img_rgb, img_array
+def preprocess_image(uploaded_file, size=(224, 224)):
+    try:
+        img = Image.open(uploaded_file).convert("RGB")
+
+        img = img.resize(size)
+
+        img_array = np.array(img).astype(np.float32) / 255.0
+        img_array = np.expand_dims(img_array, axis=0)
+
+        return img, img_array
+
+    except Exception as e:
+        raise ValueError(f"Image preprocessing failed: {e}")

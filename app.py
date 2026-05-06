@@ -121,34 +121,62 @@ if uploaded_file:
 - **MobileNetV2:** {mob_label} ({mob_conf:.2%})  
 - **ResNet50:** {res_label} ({res_conf:.2%})  
 """)
+    
 
 # -------------------------------------------------
-# FOOTER
+# OPEN SOURCE + GITHUB SECTION
 # -------------------------------------------------
-st.divider()
+
+st.markdown("---")
+
 st.markdown("""
+## 🌐 Open Source Project
+
+This project is fully **open-source** and welcomes contributions from the community.
+
+### 🔓 License
+![MIT License](https://img.shields.io/badge/License-MIT-green.svg)
+
+This project is licensed under the **MIT License**, which means:
+- ✔ You can use it freely
+- ✔ You can modify it
+- ✔ You can distribute it
+- ✔ You can contribute improvements
+
+👉 License file: https://github.com/nazmul-1117/medx-pneunet/blob/main/LICENSE
+
 ---
-## 👨‍💻 Authors
 
-**MedX AI Project Team**
+### 📦 GitHub Repository
 
-- 🧑‍💼 **Md. Nazmul Hossain** *(Team Lead)*  
-  🔗 GitHub: https://github.com/nazmul-1117  
+👉 Source Code: https://github.com/nazmul-1117/medx-pneunet
 
-- 👨‍💻 **Md. Reahoon Zannah**  
-  🔗 GitHub: https://github.com/pro382r  
-
-- 👨‍💻 **Nasif Hasan Toha**
+![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-black?logo=github)
 
 ---
 
-## ⚠️ Disclaimer
-This tool is intended for **research and educational purposes only** and must not be used for clinical diagnosis.
+### 🤝 Contribute to this Project
+
+We welcome contributions from developers, researchers, and students!
+
+You can contribute by:
+- 🐛 Reporting bugs
+- 🚀 Improving model accuracy
+- 🎨 Enhancing UI/UX
+- 🧠 Adding new AI models (e.g., EfficientNet, DenseNet)
+- 📊 Improving Grad-CAM visualizations
+- 📄 Improving documentation
+
+👉 Feel free to fork and submit a pull request!
+
+---
+
+### 💡 Open Source Philosophy
+
+> “AI should be transparent, explainable, and accessible to everyone.”
+
+This project follows that principle by providing:
+- Explainable AI (Grad-CAM)
+- Open training/inference pipeline
+- Reproducible ML workflow
 """)
-
-st.markdown("""
----
-<div style="text-align: center; color: #888; font-size: 13px; padding: 10px;">
-© 2026 <b>MedX AI Project Team</b> • All Rights Reserved • Built with Streamlit
-</div>
-""", unsafe_allow_html=True)
